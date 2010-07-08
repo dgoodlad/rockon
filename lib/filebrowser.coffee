@@ -21,27 +21,30 @@ scanDir: (dirname, callback) ->
             else
               scanDir path, callback
 
-filesToHash: []
+files: []
 hashing: false
+hashFile: (file, callback) ->
+  files.push { path: file, callback: callback }
+  startHashing() unless hashing
 
-hashFiles: () ->
+startHashing: () ->
   hashing: true
-  path: filesToHash.pop()
-  hash: crypto.createHash 'md5'
+  { path, callback } : files.pop()
+  hash: crypto.createHash 'sha1'
   stream: fs.createReadStream path
   stream.addListener 'data', (data) ->
     hash.update data
   stream.addListener 'end', () ->
-    sys.log "Discovered: " + path
-    sys.log "            " + hash.digest('hex')
-    if filesToHash.length == 0
+    callback path, hash.digest('hex')
+    if files.length == 0
       hashing: false
     else
-      hashFiles()
+      startHashing()
 
-queueFile: (file) ->
-  filesToHash.push file
-  hashFiles() unless hashing
-
-scanDir "/Volumes/Ninja/iTunes", queueFile
+exports.createScanner: (dir) ->
+  {
+    scan: (callback) ->
+      scanDir dir, (file) ->
+        hashFile file, callback
+  }
 
