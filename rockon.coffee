@@ -8,7 +8,7 @@ require 'coffee-script'
 sys: require 'sys'
 
 # Rock On
-filescanner: require './lib/filebrowser'
+filescanner: require './lib/filescanner'
 
 HOME: process.env['HOME']
 scanner: filescanner.createScanner "$HOME/.rockon/music"
