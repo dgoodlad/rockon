@@ -1,4 +1,4 @@
-# Rock On! |..|
+# Rock On! \m/
 # (c) 2010 David Goodlad
 
 # Make it so we can require .coffee files directly
