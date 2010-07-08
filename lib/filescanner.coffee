@@ -45,6 +45,8 @@ exports.createScanner: (dir) ->
   {
     scan: (callback) ->
       scanDir dir, (file) ->
-        hashFile file, callback
+        callback file
+        #fs.realpath file, (err, resolvedPath) ->
+        #  callback resolvedPath
   }
 
