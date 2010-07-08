@@ -5,6 +5,11 @@ var discovery = require('./lib/discovery'),
 
 var db = dbclient.connect('localhost', 5984, 'rockon');
 
+var changes = db.changesStream();
+changes.addListener('data', function(change) {
+  sys.log(sys.inspect(change));
+});
+
 if(process.argv.length > 2) {
   var PORT = parseInt(process.argv[2]);
 } else {
