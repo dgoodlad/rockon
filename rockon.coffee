@@ -8,19 +8,16 @@ require 'coffee-script'
 sys: require 'sys'
 
 # Rock On
-filescanner: require './lib/filescanner'
+FileScanner: require('./lib/filescanner').FileScanner
 id3: require './lib/id3'
 DB: require('./lib/db').DB
 db: new DB('localhost', 5984, 'rockon')
 
 HOME: process.env['HOME']
-scanner: filescanner.createScanner "$HOME/.rockon/music"
-scanner.scan (path) ->
-  sys.log "Testing $path"
-  if /\.mp3$/.test(path)
-    sys.log "Discovered: " + path
-    db.addTrack path
+scanner: new FileScanner /\.mp3$/, "$HOME/.rockon/music"
+scanner.addListener 'foundFile', (file) ->
+  sys.log "Discovered: " + file
+  id3.getTags file, (tags) ->
+    db.addTrack file, null, tags
+scanner.scan()
 
-    #sys.log "            " + digest
-    #id3.getTags path, (tags) ->
-    #  sys.log sys.inspect(tags)

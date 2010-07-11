@@ -1,52 +1,32 @@
-_:      require '../vendor/underscore'
-sys:    require 'sys'
-fs:     require 'fs'
-crypto: require 'crypto'
+sys: require 'sys'
+fs:  require 'fs'
+EventEmitter: require('events').EventEmitter
 
 p: (obj) -> sys.debug(sys.inspect(obj))
 
-scanDir: (dirname, callback) ->
-  fs.readdir dirname, (err, files) ->
-    if err
-      p err
-    else
+class FileScanner extends EventEmitter
+  constructor: (pattern, dirs...) ->
+    @pattern: pattern
+    @dirs: dirs
+    super()
+
+  scan: -> this.scanDir dir for dir in @dirs
+
+  foundFile: (file) ->
+    this.emit 'foundFile', file if @pattern.test(file)
+
+  scanDir: (dir) ->
+    self: this
+    fs.readdir dir, (err, files) ->
+      return p(err) if err
       for file in files
-        path: "$dirname/$file"
+        path: "$dir/$file"
         fs.stat path, (err, stats) ->
-          if err
-            p err
+          return p(err) if err
+          if stats.isFile()
+            self.foundFile(path)
           else
-            if stats.isFile()
-              callback path
-            else
-              scanDir path, callback
+            self.scanDir(path)
 
-files: []
-hashing: false
-hashFile: (file, callback) ->
-  files.push { path: file, callback: callback }
-  startHashing() unless hashing
-
-startHashing: () ->
-  hashing: true
-  { path, callback } : files.pop()
-  hash: crypto.createHash 'sha1'
-  stream: fs.createReadStream path
-  stream.addListener 'data', (data) ->
-    hash.update data
-  stream.addListener 'end', () ->
-    callback path, hash.digest('hex')
-    if files.length == 0
-      hashing: false
-    else
-      startHashing()
-
-exports.createScanner: (dir) ->
-  {
-    scan: (callback) ->
-      scanDir dir, (file) ->
-        callback file
-        #fs.realpath file, (err, resolvedPath) ->
-        #  callback resolvedPath
-  }
+exports.FileScanner: FileScanner
 
