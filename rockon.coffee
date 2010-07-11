@@ -21,3 +21,4 @@ scanner.addListener 'foundFile', (file) ->
     db.addTrack file, null, tags
 scanner.scan()
 
+require('./lib/webserver').listen 8080
