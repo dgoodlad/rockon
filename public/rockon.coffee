@@ -9,11 +9,25 @@ seconds_to_time: (time) ->
 $ ->
   $audio: $("#audio")
   audio: $audio.get(0)
+
+  queue_next: ->
+    current: $("#playlist .track.current")
+    next: if current.length == 0 then $("#playlist .track").first() else current.next(".track")
+    enqueue next
+    current.removeClass("current")
+    next.addClass("current")
+
+  queue_prev: ->
+    current: $("#playlist .track.current")
+    prev: if current.length == 0 then $("#playlist .track").first() else current.prev(".track")
+    enqueue prev
+    current.removeClass("current")
+    prev.addClass("current")
+
+  enqueue: (track) -> $audio.attr("src", track.attr("data-path"))
+
   $("#play").click (event) ->
-    unless paused
-      track: $("#playlist .track")[0]
-      path: $(track).attr("data-path")
-      $audio.attr('src', path)
+    queue_next() unless paused
     audio.play()
     event.preventDefault()
 
@@ -28,6 +42,14 @@ $ ->
     audio.pause()
     paused: false
     event.preventDefault()
+
+  $("#skip").click (event) ->
+    queue_next()
+    audio.play()
+
+  $("#prev").click (event) ->
+    queue_prev()
+    audio.play()
 
   $audio.bind "timeupdate", ->
     curr: seconds_to_time(audio.currentTime)
