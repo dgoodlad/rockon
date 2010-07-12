@@ -1,0 +1,27 @@
+@bgcolor: #202020;
+@fgcolor: #fff;
+
+body {
+  margin: 0 auto;
+  width: 50em;
+  background-color: @bgcolor;
+  color: @fgcolor;
+
+  font-family: "Helvetica Neue";
+}
+
+#controls { }
+#playlist { float: left; width: 20em; }
+#library  { }
+
+#playlist {
+  .track {
+    .album  { display: none; }
+    .artist { font-weight: lighter; }
+    .title  { font-weight: bolder; }
+
+    padding: 0.4em 1em;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#303030), color-stop(0.3, #282828), to(@bgcolor + #010101));
+    border-radius: 2px;
+  }
+}
