@@ -14,14 +14,32 @@ body {
 #playlist { float: left; width: 20em; }
 #library  { }
 
+#controls {
+  a, a:visited {
+    text-decoration: none;
+    color: #9999dd;
+    display: inline-block;
+    padding: 0.2em 0.6em;
+    border: 1px solid #444;
+    border-radius: 2px;
+  }
+  a:hover {
+    background-color: @bgcolor + #080808;
+  }
+}
+
 #playlist {
   .track {
     .album  { display: none; }
-    .artist { font-weight: lighter; }
+    .artist { font-weight: lighter; display: inline-block; float: right; }
     .title  { font-weight: bolder; }
 
     padding: 0.4em 1em;
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#303030), color-stop(0.3, #282828), to(@bgcolor + #010101));
+    margin-bottom: 0.5em;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#282828), color-stop(0.3, #282828), to(@bgcolor + #010101));
     border-radius: 2px;
+  }
+  .track.current {
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#404040), color-stop(0.3, #282828), to(@bgcolor + #010101));
   }
 }
