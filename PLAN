@@ -1,0 +1,20 @@
+Library Scanning:
+  Traverse a directory tree; for each file:
+    If the file is known:
+      Test that the file hasn't been updated via mtime
+    Otherwise (file is unknown)
+      Add the file to couch after hashing/tagging
+
+  Each file should look like this in couch:
+
+  {
+    id: "/Users/dave/.rockon/music/Vermin/Vermin - Chemical.mp3",
+    mtime: "2010-07-13T12:26:19Z",
+    metadata: {
+      title: "Chemical",
+      artist: "Vermin"
+    }
+    digest: "deadbeefdeadbeefdeadbeefdeadbeef"
+  }
+
+
