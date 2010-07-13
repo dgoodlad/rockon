@@ -12,8 +12,8 @@ class FileScanner extends EventEmitter
 
   scan: -> this.scanDir dir for dir in @dirs
 
-  foundFile: (file) ->
-    this.emit 'foundFile', file if @pattern.test(file)
+  foundFile: (dir, file, stats) ->
+    this.emit 'foundFile', dir, file, stats if @pattern.test(file)
 
   scanDir: (dir) ->
     self: this
@@ -24,7 +24,7 @@ class FileScanner extends EventEmitter
         fs.stat path, (err, stats) ->
           return p(err) if err
           if stats.isFile()
-            self.foundFile(path)
+            self.foundFile(dir, file, stats)
           else
             self.scanDir(path)
 
