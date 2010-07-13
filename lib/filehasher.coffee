@@ -7,7 +7,7 @@ p: (obj) -> sys.debug(sys.inspect(obj))
 
 class FileHasher
   constructor: (algorithm) ->
-    @algorithm: algorithm || 'sha1'
+    @algorithm: algorithm || 'md5'
     @running: false
     @files: []
 
