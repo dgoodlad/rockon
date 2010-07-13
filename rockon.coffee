@@ -30,16 +30,32 @@ isKnown: (dir, file, callback) ->
 HOME: process.env['HOME']
 scanner: new FileScanner /\.mp3$/, "$HOME/.rockon/music"
 hasher:  new FileHasher()
+complete: 0
+queued: 0
+errors: 0
 scanner.addListener 'foundFile', (dir, file, stats) ->
   path: "$dir/$file"
   isKnown dir, file, (known) ->
     if known
-      sys.log "Already know about $path"
+      #sys.log "Already know about $path"
     else
-      id3.getTags path, (tags) ->
-        hasher.hash path, (hash) ->
-          sys.log "Discovered: $file"
+      queued += 1
+      hasher.hash path, (hash) ->
+        id3.getTags path, (tags) ->
+          #sys.log "Discovered: $file"
+          queued -= 1
+          if tags.error
+            tags: {}
+            errors += 1
+          else
+            complete += 1
           db.addTrack path, stats, hash, tags
 scanner.scan()
+
+printQueue: ->
+  sys.log "Complete: $complete / Queued: $queued / Errors: $errors"
+  setTimeout(printQueue, 1000)
+
+printQueue()
 
 require('./lib/webserver').listen 3000

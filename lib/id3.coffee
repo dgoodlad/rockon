@@ -7,8 +7,9 @@ child_process: require 'child_process'
 exports.getTags: (file, callback) ->
   child: child_process.exec "bin/id3.rb '$file'", (err, stdout, stderr) ->
     if err
-      sys.debug sys.inspect(err)
-      sys.debug stderr
+      #sys.debug sys.inspect(err)
+      #sys.debug stderr
+      callback { error: true }
     else
       callback JSON.parse(stdout)
 
